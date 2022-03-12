@@ -25,7 +25,7 @@ class ScheduleViewModel(private val useCases: ScheduleUseCases) : ViewModel() {
     }
 
     private fun observeTasks() = viewModelScope.launch {
-        useCases.observeTaskUseCase()
+        useCases.observeTasksUseCase()
             .collect { updateTasks(it) }
     }
 
@@ -40,10 +40,10 @@ class ScheduleViewModel(private val useCases: ScheduleUseCases) : ViewModel() {
         }
     }
 
-    fun sendAction(event: ScheduleAction) {
-        when (event) {
-            is ScheduleAction.UpdateDateTimeDialogVisibility -> updateDateTimeDialogVisibility(event.newVal)
-            is ScheduleAction.UpdateDate -> updateDate(event.dateTime)
+    fun sendAction(action: ScheduleAction) {
+        when (action) {
+            is ScheduleAction.UpdateDateTimeDialogVisibility -> updateDateTimeDialogVisibility(action.newVal)
+            is ScheduleAction.UpdateDate -> updateDate(action.dateTime)
             ScheduleAction.CreateTask -> createTask()
             ScheduleAction.ChangeToCurrentDay -> changeToCurrentDay()
         }

@@ -5,6 +5,6 @@ import ru.dromanryuk.task_scheduler_android.featureTask.domain.useCase.CreateTas
 import ru.dromanryuk.task_scheduler_android.featureTask.domain.useCase.ObserveTasksUseCase
 
 class ScheduleUseCases(taskRepository: TaskRepository) {
-    val observeTaskUseCase = ObserveTasksUseCase(taskRepository)
+    val observeTasksUseCase = ObserveTasksUseCase(taskRepository)
     val createTaskUseCase = CreateTaskUseCase(taskRepository)
 }

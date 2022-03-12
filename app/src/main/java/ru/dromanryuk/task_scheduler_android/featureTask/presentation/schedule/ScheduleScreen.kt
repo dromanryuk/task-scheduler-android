@@ -2,15 +2,17 @@ package ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule
 
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import org.koin.androidx.compose.viewModel
+import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.DefaultFloatingActionButton
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.DefaultScaffold
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.showDatePicker
-import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.components.ScheduleFloatingActionButton
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.components.ScheduleScreenContent
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.components.ScheduleTopAppBar
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.model.ScheduleAction
@@ -40,8 +42,9 @@ fun ScheduleScreen() {
             )
         },
         floatingActionButton = {
-            ScheduleFloatingActionButton(
-                onAddClick = { sendAction(ScheduleAction.CreateTask) }
+            DefaultFloatingActionButton(
+                onClick = { sendAction(ScheduleAction.CreateTask) },
+                icon = Icons.Filled.Add
             )
         }
     )
