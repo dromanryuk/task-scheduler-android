@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.collect
 import ru.dromanryuk.task_scheduler_android.featureTask.domain.model.Task
 import ru.dromanryuk.task_scheduler_android.featureTask.domain.repository.TaskRepository
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class UpdateTaskUseCase(
     private val taskRepository: TaskRepository,
@@ -22,7 +22,7 @@ class UpdateTaskUseCase(
     private fun Task.createUpdated(params: Params) = copy(
         title = params.title,
         description = params.description,
-        time = params.dateTime.toInstant(ZoneOffset.UTC)
+        time = params.dateTime.atZone(ZoneId.systemDefault()).toInstant()
     )
 
     data class Params(

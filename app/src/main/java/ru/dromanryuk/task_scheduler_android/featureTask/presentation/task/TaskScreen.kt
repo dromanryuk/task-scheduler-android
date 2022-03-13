@@ -3,9 +3,7 @@ package ru.dromanryuk.task_scheduler_android.featureTask.presentation.task
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,20 +21,28 @@ import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.model.
 @ExperimentalComposeUiApi
 @Composable
 fun TaskScreen(
+    taskId: String,
     navigateBack: () -> Unit
 ) {
     val viewModel by viewModel<TaskViewModel>()
     val state by viewModel.state.collectAsState()
     val sendAction = viewModel::sendAction
 
+    SideEffect {
+        if (state.id != taskId) {
+            sendAction(TaskEditingAction.LoadTask(taskId))
+        }
+    }
+
     DefaultScaffold(
         modifier = Modifier,
         topBar = {
-            TaskTopAppBar { sendAction(TaskEditingAction.ExitScreen) }
+            TaskTopAppBar(
+                onNavigateBack = { sendAction(TaskEditingAction.ExitScreen) },
+                onDeleteTask = { sendAction(TaskEditingAction.RemoveTask) }
+            )
         },
-        bottomBar = {
-
-        },
+        bottomBar = {  },
         content = {
             TaskScreenContent(
                 task = state,
@@ -54,6 +60,10 @@ fun TaskScreen(
     )
     DateDialogWrapper(state, sendAction)
     TimeDialogWrapper(state, sendAction)
+    LaunchedEffect(key1 = state.isExitFromScreen) {
+        if (state.isExitFromScreen)
+            navigateBack()
+    }
 }
 
 @Composable

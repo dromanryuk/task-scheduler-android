@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TaskTopAppBar(
     onNavigateBack: () -> Unit,
+    onDeleteTask: () -> Unit,
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primary,
@@ -33,6 +35,15 @@ fun TaskTopAppBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.surface
+                )
+            }
+            IconButton(
+                onClick = { onDeleteTask() },
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.DeleteOutline,
                     contentDescription = "",
                     tint = MaterialTheme.colors.surface
                 )

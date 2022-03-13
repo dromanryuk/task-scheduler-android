@@ -3,6 +3,8 @@ package ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.model
 import java.time.LocalDateTime
 
 sealed class TaskEditingAction {
+    data class  LoadTask(val id: String) : TaskEditingAction()
+
     data class OnTitleChanged(val title: String) : TaskEditingAction()
     data class OnDescriptionChanged(val description: String) : TaskEditingAction()
 
@@ -11,6 +13,8 @@ sealed class TaskEditingAction {
     data class UpdateDateTime(val dateTime: LocalDateTime) : TaskEditingAction()
 
     object SaveEditing : TaskEditingAction()
+
+    object RemoveTask : TaskEditingAction()
 
     object ExitScreen: TaskEditingAction()
 }

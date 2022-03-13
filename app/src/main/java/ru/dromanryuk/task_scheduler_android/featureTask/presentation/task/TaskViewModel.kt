@@ -1,6 +1,5 @@
 package ru.dromanryuk.task_scheduler_android.featureTask.presentation.task
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,36 +17,14 @@ import java.time.ZoneId
 
 class TaskViewModel(
     private val useCases: TaskUseCases,
-    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-//    private val taskId = savedStateHandle.get<String>("taskId")
-//        ?: error("noteId argument is not passed")
-
-    private val taskId = "2bc6f468-9ceb-4ed8-ba27-9e6ed7f548e3"
-
+    private var taskId = ""
     private val _state = MutableStateFlow(TaskState())
     val state = _state.asStateFlow()
 
-    init {
-        observeTask()
-    }
-
-    private fun observeTask() = viewModelScope.launch {
-        useCases.observeTaskUseCase(taskId)
-            .collect { task ->
-                _state.update { state ->
-                    state.copy(
-                        titleState = task.title,
-                        descriptionState = task.description,
-                        dateTimePikersState = state.dateTimePikersState.copy(
-                            currDateTime = LocalDateTime.ofInstant(task.time, ZoneId.systemDefault()))
-                    )
-                }
-            }
-    }
-
     fun sendAction(action: TaskEditingAction) {
         when (action) {
+            is TaskEditingAction.LoadTask -> observeTask(action.id)
             is TaskEditingAction.OnTitleChanged -> changeTitle(action.title)
             is TaskEditingAction.OnDescriptionChanged -> changeDescription(action.description)
             is TaskEditingAction.UpdateDateTime -> updateDateTime(action.dateTime)
@@ -62,7 +39,28 @@ class TaskViewModel(
                 }
             }
             TaskEditingAction.SaveEditing -> onSaveEditing(_state.value)
+            TaskEditingAction.RemoveTask -> removeTask()
         }
+    }
+
+    private fun observeTask(id: String) = viewModelScope.launch {
+        useCases.observeTaskUseCase(id)
+            .collect { task ->
+                _state.update { state ->
+                    state.copy(
+                        id = task.id,
+                        titleState = task.title,
+                        descriptionState = task.description,
+                        dateTimePikersState = state.dateTimePikersState.copy(
+                            currDateTime = LocalDateTime.ofInstant(
+                                task.time,
+                                ZoneId.systemDefault()
+                            )
+                        )
+                    )
+                }
+            }
+        taskId = id
     }
 
     private fun changeTitle(title: String) = viewModelScope.launch {
@@ -78,18 +76,25 @@ class TaskViewModel(
     }
 
     private fun updateDateTime(dateTime: LocalDateTime) = viewModelScope.launch {
-        if (dateTime >= LocalDateTime.now()) {
-            _state.update {
-                it.copy(dateTimePikersState = it.dateTimePikersState.copy(currDateTime = dateTime,
+        _state.update {
+            it.copy(
+                dateTimePikersState = it.dateTimePikersState.copy(
+                    currDateTime = dateTime,
                     timeDialogVisibility = false,
-                    dateDialogVisibility = false))
-            }
+                    dateDialogVisibility = false
+                )
+            )
         }
     }
 
     private fun updateDateTimeDialogVisibility(type: DropdownType, newVal: Boolean) {
         _state.update {
-            it.copy(dateTimePikersState = it.dateTimePikersState.changeDialogVisibility(type, newVal))
+            it.copy(
+                dateTimePikersState = it.dateTimePikersState.changeDialogVisibility(
+                    type,
+                    newVal
+                )
+            )
         }
     }
 
@@ -111,6 +116,7 @@ class TaskViewModel(
     }
 
     private fun onSaveEditing(state: TaskState) = with(state) {
+        onExitScreen()
         viewModelScope.launch {
             useCases.updateTaskUseCase(
                 UpdateTaskUseCase.Params(

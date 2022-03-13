@@ -11,5 +11,5 @@ val taskSchedulerPresentationModule = module {
     single { ScheduleUseCases(get()) }
     single { TaskUseCases(get()) }
     viewModel { ScheduleViewModel(get()) }
-    viewModel { TaskViewModel(get(), get()) }
+    viewModel { TaskViewModel(get()) }
 }
