@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import ru.dromanryuk.task_scheduler_android.featureTask.domain.model.Task
 import ru.dromanryuk.task_scheduler_android.featureTask.domain.repository.TaskRepository
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class CreateTaskUseCase(
     private val taskRepository: TaskRepository,
@@ -15,9 +15,9 @@ class CreateTaskUseCase(
             createTaskModel(
                 Task(
                     id = "",
-                    title = "title 1",
+                    title = "",
                     description = "",
-                    time = date.toInstant(ZoneOffset.UTC),
+                    time = date.atZone(ZoneId.systemDefault()).toInstant(),
                 ),
                 onTaskClick
             )

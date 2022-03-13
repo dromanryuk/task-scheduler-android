@@ -1,10 +1,10 @@
 package ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -19,12 +19,14 @@ import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.mo
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.model.ScheduleState
 
 @Composable
-fun ScheduleScreen() {
+fun ScheduleScreen(navigateToTaskScreen: (String) -> Unit) {
     val viewModel by viewModel<ScheduleViewModel>()
     val state by viewModel.state.collectAsState()
     val sendAction = viewModel::sendAction
 
-    Log.d("tasks", "state.tasksViewStates === ${state.tasksViewStates}")
+    LaunchedEffect(state.tasksViewStates) {
+        sendAction(ScheduleAction.LoadTasks)
+    }
 
     DefaultScaffold(
         modifier = Modifier,
@@ -38,17 +40,26 @@ fun ScheduleScreen() {
         bottomBar = {  },
         content = {
             ScheduleScreenContent(
-                state = state
+                state = state,
+                onTaskClick = navigateToTaskScreen
             )
         },
         floatingActionButton = {
             DefaultFloatingActionButton(
-                onClick = { sendAction(ScheduleAction.CreateTask) },
+                onClick = {
+                    sendAction(ScheduleAction.CreateTask)
+                },
                 icon = Icons.Filled.Add
             )
         }
     )
     DateDialogWrapper(state, sendAction)
+    LaunchedEffect(key1 = state.createdTaskId) {
+        state.createdTaskId?.let {
+            navigateToTaskScreen(it)
+            sendAction(ScheduleAction.ClearCreatedTaskId)
+        }
+    }
 }
 
 @Composable

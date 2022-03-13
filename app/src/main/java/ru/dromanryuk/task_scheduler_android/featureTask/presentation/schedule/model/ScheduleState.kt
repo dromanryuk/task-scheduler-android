@@ -19,7 +19,16 @@ fun isCurrDay(date: LocalDateTime): Boolean {
 
 fun getCurrDateStr(currDateTime: LocalDateTime): String {
     val dateFormat = DateTimeFormatter.ofPattern("LLL")
-    return dateFormat.format(currDateTime)
+    val yearFormat = DateTimeFormatter.ofPattern("LLL yyyy")
+    return if (currDateTime.year == LocalDateTime.now().year) {
+        getFormatString(currDateTime, dateFormat)
+    } else {
+        getFormatString(currDateTime, yearFormat)
+    }
+}
+
+fun getFormatString(currDateTime: LocalDateTime, yearFormat: DateTimeFormatter): String {
+    return yearFormat.format(currDateTime)
         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 }
 

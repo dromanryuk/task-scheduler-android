@@ -1,8 +1,7 @@
 package ru.dromanryuk.task_scheduler_android.navigation
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.*
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.ScheduleScreen
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.TaskScreen
 
@@ -12,11 +11,22 @@ object TaskScheduleScreen {
 }
 
 @ExperimentalComposeUiApi
-fun NavGraphBuilder.registerBathFeatureFlow(navController: NavController) {
+fun NavGraphBuilder.registerTaskFeatureFlow(navController: NavController) {
+    var taskId = ""
     registerScreen(TaskScheduleScreen.Schedule) {
-        ScheduleScreen()
+        ScheduleScreen(
+            navigateToTaskScreen = {
+                taskId = it
+                navController.navigate(TaskScheduleScreen.Task.route)
+            }
+        )
     }
     registerScreen(TaskScheduleScreen.Task) {
-        TaskScreen(navigateBack = { navController.navigate(TaskScheduleScreen.Schedule.route) })
+        TaskScreen(
+            navigateBack = {
+                navController.popBackStack()
+            },
+            taskId = taskId
+        )
     }
 }

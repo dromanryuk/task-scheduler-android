@@ -3,6 +3,10 @@ package ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.m
 import java.time.LocalDateTime
 
 sealed class ScheduleAction {
+    object LoadTasks : ScheduleAction()
+
+    object ClearCreatedTaskId : ScheduleAction()
+
     object CreateTask : ScheduleAction()
 
     object ChangeToCurrentDay : ScheduleAction()

@@ -45,7 +45,9 @@ class ScheduleViewModel(private val useCases: ScheduleUseCases) : ViewModel() {
             is ScheduleAction.UpdateDateTimeDialogVisibility -> updateDateTimeDialogVisibility(action.newVal)
             is ScheduleAction.UpdateDate -> updateDate(action.dateTime)
             ScheduleAction.CreateTask -> createTask()
+            ScheduleAction.LoadTasks -> observeTasks()
             ScheduleAction.ChangeToCurrentDay -> changeToCurrentDay()
+            ScheduleAction.ClearCreatedTaskId -> clearCreatedTaskId()
         }
     }
 
@@ -76,5 +78,11 @@ class ScheduleViewModel(private val useCases: ScheduleUseCases) : ViewModel() {
             it.copy(selectedDate = LocalDateTime.now(), isCurrDay = true)
         }
         observeTasks()
+    }
+
+    private fun clearCreatedTaskId() {
+        _state.update {
+            it.copy(createdTaskId = null)
+        }
     }
 }

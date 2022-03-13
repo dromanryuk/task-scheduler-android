@@ -10,7 +10,7 @@ import androidx.navigation.compose.rememberNavController
 @ExperimentalComposeUiApi
 @Composable
 fun AppNavigationFlow() {
-    val startDestination = TaskScheduleScreen.Task.route
+    val startDestination = TaskScheduleScreen.Schedule.route
     AppNavHost(startDestination = startDestination)
 }
 
@@ -25,5 +25,5 @@ private fun AppNavHost(startDestination: String) {
 
 @ExperimentalComposeUiApi
 private fun NavGraphBuilder.registerAppFlow(navController: NavController) {
-    registerBathFeatureFlow(navController)
+    registerTaskFeatureFlow(navController)
 }

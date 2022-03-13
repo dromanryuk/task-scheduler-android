@@ -3,7 +3,9 @@ package ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.c
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +19,26 @@ import ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.mo
 import java.time.LocalDateTime
 
 @Composable
-fun ScheduleScreenContent(state: ScheduleState) {
+fun ScheduleScreenContent(state: ScheduleState, onTaskClick: (String) -> Unit) {
+    val verticalScrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         AllTasksPanel(state)
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(verticalScrollState)
+        ) {
+            ScheduleSidebar(
+                hourHeight = 64.dp
+            )
+            Schedule(
+                tasks = state.tasksViewStates,
+                onTaskClick = onTaskClick
+            )
+        }
     }
 }
 

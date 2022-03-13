@@ -11,7 +11,7 @@ data class TaskViewState(
     val id: String,
     val title: String,
     val description: String,
-    val date: String,
+    val date: LocalDateTime,
 )
 
 suspend fun List<Task>.toTaskViewStates() = withContext(Dispatchers.Default) {
@@ -22,7 +22,7 @@ private fun Task.toTaskViewState() = TaskViewState(
     id = id,
     title = title,
     description = description,
-    date = setTimeFormat(LocalDateTime.ofInstant(time, ZoneId.systemDefault())),
+    date = LocalDateTime.ofInstant(time, ZoneId.systemDefault())
 )
 
 private fun setTimeFormat(date: LocalDateTime): String {
