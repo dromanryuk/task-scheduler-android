@@ -30,6 +30,9 @@ class TaskViewModel(
             is TaskEditingAction.UpdateDateTime -> updateDateTime(action.dateTime)
             is TaskEditingAction.UpdateDateTimeDialogVisibility ->
                 updateDateTimeDialogVisibility(action.type, action.newVal)
+            is TaskEditingAction.UpdateRemoveTaskDialogVisibility -> updateRemoveTaskDialogVisibility(
+                action.newVal
+            )
             TaskEditingAction.ExitScreen -> {
                 if (checkTaskFilling(_state.value)) {
                     removeTask()
@@ -95,6 +98,12 @@ class TaskViewModel(
                     newVal
                 )
             )
+        }
+    }
+
+    private fun updateRemoveTaskDialogVisibility(newVal: Boolean) {
+        _state.update {
+            it.copy(removeTaskDialogVisibility = newVal)
         }
     }
 

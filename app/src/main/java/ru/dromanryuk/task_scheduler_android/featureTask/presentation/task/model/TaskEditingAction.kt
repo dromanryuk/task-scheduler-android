@@ -12,6 +12,8 @@ sealed class TaskEditingAction {
 
     data class UpdateDateTime(val dateTime: LocalDateTime) : TaskEditingAction()
 
+    data class UpdateRemoveTaskDialogVisibility(val newVal: Boolean) : TaskEditingAction()
+
     object SaveEditing : TaskEditingAction()
 
     object RemoveTask : TaskEditingAction()

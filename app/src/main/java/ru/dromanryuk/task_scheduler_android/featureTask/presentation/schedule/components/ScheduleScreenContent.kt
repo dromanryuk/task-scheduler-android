@@ -1,11 +1,8 @@
 package ru.dromanryuk.task_scheduler_android.featureTask.presentation.schedule.components
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +22,7 @@ fun ScheduleScreenContent(state: ScheduleState, onTaskClick: (String) -> Unit) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        AllTasksPanel(state)
+        AllTasksPanel(state, onTaskClick)
         Row(
             modifier = Modifier
                 .weight(1f)
@@ -43,7 +40,7 @@ fun ScheduleScreenContent(state: ScheduleState, onTaskClick: (String) -> Unit) {
 }
 
 @Composable
-fun AllTasksPanel(state: ScheduleState) {
+fun AllTasksPanel(state: ScheduleState, onTaskClick: (String) -> Unit) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.primary)
@@ -52,7 +49,7 @@ fun AllTasksPanel(state: ScheduleState) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DayIcon(state.selectedDate, state.isCurrDay)
-        AllTodayTasks(state.tasksViewStates)
+        AllTodayTasks(state.tasksViewStates, onTaskClick)
     }
 }
 
@@ -90,27 +87,28 @@ fun DayIcon(selectedDate: LocalDateTime, isCurrDay: Boolean) {
 }
 
 @Composable
-fun AllTodayTasks(tasks: List<TaskViewState>) {
+fun AllTodayTasks(tasks: List<TaskViewState>, onTaskClick: (String) -> Unit) {
     FlowRow(
         modifier = Modifier.padding(bottom = 10.dp, end = 15.dp),
         mainAxisSpacing = 5.dp,
         crossAxisSpacing = 5.dp
     ) {
         tasks.forEach {
-            TaskItem(title = it.title)
+            TaskItem(title = it.title, id = it.id, onTaskClick)
         }
     }
 }
 
 @Composable
-fun TaskItem(title: String) {
+fun TaskItem(title: String, id: String, onTaskClick: (String) -> Unit) {
     Text(
         modifier = Modifier
             .background(
                 color = MaterialTheme.colors.secondary,
                 shape = RoundedCornerShape(20.dp)
             )
-            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+            .clickable { onTaskClick(id) },
         text = title,
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.body2

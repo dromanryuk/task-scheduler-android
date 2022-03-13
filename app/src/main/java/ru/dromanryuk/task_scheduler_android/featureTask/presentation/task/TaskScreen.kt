@@ -12,6 +12,7 @@ import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.DefaultScaffold
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.showDatePicker
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.components.showTimePicker
+import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.components.RemoveTaskDialog
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.components.TaskScreenContent
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.components.TaskTopAppBar
 import ru.dromanryuk.task_scheduler_android.featureTask.presentation.task.model.DropdownType.*
@@ -39,7 +40,7 @@ fun TaskScreen(
         topBar = {
             TaskTopAppBar(
                 onNavigateBack = { sendAction(TaskEditingAction.ExitScreen) },
-                onDeleteTask = { sendAction(TaskEditingAction.RemoveTask) }
+                onDeleteTask = { sendAction(TaskEditingAction.UpdateRemoveTaskDialogVisibility(true)) }
             )
         },
         bottomBar = {  },
@@ -60,6 +61,7 @@ fun TaskScreen(
     )
     DateDialogWrapper(state, sendAction)
     TimeDialogWrapper(state, sendAction)
+    RemoveTaskDialogWrapper(state, sendAction)
     LaunchedEffect(key1 = state.isExitFromScreen) {
         if (state.isExitFromScreen)
             navigateBack()
@@ -69,15 +71,15 @@ fun TaskScreen(
 @Composable
 private fun DateDialogWrapper(
     state: TaskState,
-    sendEvent: (event: TaskEditingAction) -> Unit
+    sendAction: (event: TaskEditingAction) -> Unit
 ) {
     if (state.dateTimePikersState.dateDialogVisibility) {
         showDatePicker(
             activity = LocalContext.current as AppCompatActivity,
             updateDate = {
-                sendEvent(TaskEditingAction.UpdateDateTime(it))
+                sendAction(TaskEditingAction.UpdateDateTime(it))
             },
-            onCancel = { sendEvent(TaskEditingAction.UpdateDateTimeDialogVisibility(DATE, false)) }
+            onCancel = { sendAction(TaskEditingAction.UpdateDateTimeDialogVisibility(DATE, false)) }
         )
     }
 }
@@ -85,14 +87,26 @@ private fun DateDialogWrapper(
 @Composable
 private fun TimeDialogWrapper(
     state: TaskState,
-    sendEvent: (event: TaskEditingAction) -> Unit
+    sendAction: (event: TaskEditingAction) -> Unit
 ) {
     if (state.dateTimePikersState.timeDialogVisibility) {
         showTimePicker(
             activity = LocalContext.current as AppCompatActivity,
             currDate = state.dateTimePikersState.currDateTime,
-            updateTime = { sendEvent(TaskEditingAction.UpdateDateTime(it)) },
-            onCancel ={ sendEvent(TaskEditingAction.UpdateDateTimeDialogVisibility(TIME, false)) }
+            updateTime = { sendAction(TaskEditingAction.UpdateDateTime(it)) },
+            onCancel ={ sendAction(TaskEditingAction.UpdateDateTimeDialogVisibility(TIME, false)) }
         )
     }
+}
+
+@Composable
+private fun RemoveTaskDialogWrapper(
+    state: TaskState,
+    sendAction: (TaskEditingAction) -> Unit,
+) {
+    if (state.removeTaskDialogVisibility)
+        RemoveTaskDialog(
+            onDismiss = { sendAction(TaskEditingAction.UpdateRemoveTaskDialogVisibility(false)) },
+            onRemoveTask = { sendAction(TaskEditingAction.RemoveTask) }
+        )
 }

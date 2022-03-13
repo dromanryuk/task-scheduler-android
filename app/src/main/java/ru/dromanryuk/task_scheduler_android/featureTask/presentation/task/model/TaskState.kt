@@ -4,6 +4,7 @@ data class TaskState(
     val id: String = "",
     val titleState: String = "",
     val descriptionState: String = "",
+    val removeTaskDialogVisibility: Boolean = false,
     val dateTimePikersState: DateTimePickersState = DateTimePickersState(),
     val isExitFromScreen: Boolean = false
 )
